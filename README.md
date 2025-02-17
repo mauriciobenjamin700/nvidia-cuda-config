@@ -2,69 +2,89 @@
 
 ## Instalando o CUDA Toolkit
 
-Você pode baixar usando o comando a baixo, mas observe que ele irá baixar a versão 12.0.1, que pode não ser a mais recente. Para baixar a mais recente, procure aqui neste [link](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=runfile_local)
+Para baixar a mais recente, procure aqui neste [link](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_local)
 
-```bash
-wget https://developer.download.nvidia.com/compute/cuda/12.8.0/local_installers/cuda_12.8.0_570.86.10_linux.run
-```
-
-Em seguida, execute o arquivo que foi baixado
-
-```bash
-sudo sh cuda_12.8.0_570.86.10_linux.run
-```
-
-Quando solicitado, leia o Contrato de Licença do Usuário Final (EULA), digite `accept` e pressione `Enter` para acessar as opções de instalação.
-
-Na lista de opções de instalação, desmarque marque todas as opções.
-
-Vá até a opção Instalar e pressione `Enter` para iniciar o processo de instalação
-
-Quando finalizar, você irá ver algo próximo a isso
-
-```bash
- ===========
- = Summary =
- ===========
-
- Driver:   Not Selected
- Toolkit:  Installed in /usr/local/cuda-12.0/
-
- Please make sure that
-  -   PATH includes /usr/local/cuda-12.0/bin
-  -   LD_LIBRARY_PATH includes /usr/local/cuda-12.0/lib64, or, add /usr/local/cuda-12.0/lib64 to /etc/ld.so.conf and run ldconfig as root
-
- To uninstall the CUDA Toolkit, run cuda-uninstaller in /usr/local/cuda-12.0/bin
- ***WARNING: Incomplete installation! This installation did not install the CUDA Driver. A driver of version at least 525.00 is required for CUDA 12.0 functionality to work.
- To install the driver using this installer, run the following command, replacing <CudaInstaller> with the name of this run file:
-     sudo <CudaInstaller>.run --silent --driver
-
- Logfile is /var/log/cuda-installer.log
-```
+Lembre-se de instalar a versão usando `installe Type` `deb (local)`
 
 ## Configurando o CUDA Toolkit
 
-Adicionaremos o `cuda` ao path do sistema. Lembrando de trocar `cuda-12.0` pela versão que esta usando, e troque `SEU_NOME_DE_USUARIO` pelo nome de usuário da sua maquina
-
 ```bash
-echo "export PATH=/usr/local/cuda-12.0/bin${PATH:+:${PATH}}" >> /home/SEU_NOME_DE_USUARIO/.bashrc
+sudo apt-get install -y nvidia-open
 ```
 
-Adicionaremos a biblioteca `cuda toolkit` ao path das bibliotecas (`LD_LIBRARY_PATH`). Lembrando de trocar `cuda-12.0` pela versão que esta usando, e troque `SEU_NOME_DE_USUARIO` pelo nome de usuário da sua maquina
-
 ```bash
-echo "export LD_LIBRARY_PATH=/usr/local/cuda-12.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >> /home/SEU_NOME_DE_USUARIO/.bashrc
-```
-
-O comando LD_LIBRARY_PATH acima atualiza o carregador de link do kit de ferramentas CUDA com a localização das bibliotecas compartilhadas
-
-Agora basta que ative as alterações nas variáveis ​​de ambiente
-
-```bash
-source /home/pythonuser/.bashrc
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 ```
 
 Prontinho, agora para habilitar o aprendizado profundo acelerado por GPU no Ubuntu, instale o cuDNN para otimizar o treinamento e a inferência da rede neural. [Clique Aqui](./docs/cuDNN.md)
+
+## Verificando a Instação
+
+Vamos verificar se realmente instalou corretamente
+
+Checando se os drivers estão funcionando corretamente. Irá aparecer no terminal uma tabela com as informações da sua Placa
+
+```bash
+nvidia-smi
+```
+
+Verificando se o Compilador Cuda do Nvidia está funcionando (NVCC)
+
+```bash
+nvcc --version
+```
+
+Resultado esperado
+
+```bash
+nvcc: NVIDIA (R) Cuda compiler driver 
+Copyright (c) 2005-2023 NVIDIA Corporation 
+Built on Tue_Jul_11_02:20:44_PDT_2023 
+Cuda compilation tools, release 12.0, V12.0.140
+Build cuda_12.0.r12.0/compiler.32267302_0
+```
+
+caso o resultado seja diferente do esperado, siga estes passos
+
+Corrigindo Instalação
+
+```bash
+sudo apt install nvidia-cuda-toolkit
+```
+
+Tente novamente com
+
+```bash
+nvcc --version
+```
+
+Verificando se o software cuda está funcionando corretamente
+
+```bash
+lspci | grep -i nvidia
+```
+
+Resultado esperado proximo de:
+
+```bash
+6:00.0 VGA compatible controller: NVIDIA Corporation GA102GL [A40] (rev a1)
+
+```
+
+```bash
+gcc --version
+```
+
+Resultado esperado, proximo de:
+
+```bash
+gcc (Ubuntu 11.3.0-1ubuntu1~22.04.1) 11.3.0 
+Copyright (C) 2021 Free Software Foundation, Inc. 
+This is free software; see the source for copying conditions.  
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+```
+
 
 ## Referências Usadas
 
